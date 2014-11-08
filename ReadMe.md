@@ -20,3 +20,6 @@ Written in PHP for Heroku.
 7. When the user submits the classification, the form sends back the tweet ID and the classification to the server.
 
 8. The server uses the ID to fetch the tweet once again, and stores the columns we are interested in to PostGres: ID, username, text, timestamp, lat/lon (if available) – anything missing?
+
+That should be all, no?
+
