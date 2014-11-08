@@ -5,6 +5,7 @@ Crowdsourced tweet classifier that auto-replies to tweets from people mentioning
 Written in PHP for Heroku.
 
 **Steps to complete**:
+
 1. Set up Twitter account
 
 2. Register App
