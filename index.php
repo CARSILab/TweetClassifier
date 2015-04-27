@@ -1,3 +1,20 @@
+<?php
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    require "credentials.inc";
+    
+    if(!isset($_GET['q'])) {
+        echo "Please provide a query string via the \"q\" parameter.";
+        exit;
+    }
+    $key = pg_escape_string($_GET['q']);
+    
+    $dbconn = pg_connect("host=localhost port=5432 dbname=$db user=$user password=$pass");
+    $query = "SELECT * FROM tweets WHERE id = '".$key."'";
+  
+    $results = pg_query($dbconn, $query) or die(pg_last_error());
+    $row = pg_fetch_object($results);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,11 +22,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="bootstrap.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
   <meta name="twitter:widgets:theme" content="light">
   <meta name="twitter:widgets:link-color" content="#55acee">
   <meta name="twitter:widgets:border-color" content="#55acee">
+
 </head>
 <body>
 
@@ -19,19 +37,20 @@
     <p>Twitter, for good</p>
   </div>
   <h3>You said...</h3>
-  <!--<blockquote class="twitter-tweet" lang="en"><p>Bicycling is more than bike advocacy, I blogged: <a href="http://t.co/Y0lxxvq4KQ">http://t.co/Y0lxxvq4KQ</a></p>&mdash; Dr. Adonia Lugo (@urbanadonia) <a href="https://twitter.com/urbanadonia/status/576505892696391682">March 13, 2015</a></blockquote>
-  <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+  <blockquote class="twitter-tweet" lang="en"><p><?php echo $row->tweet; ?></p>&mdash; <?php echo $row->username; ?>&nbsp;(<a style='font-size:12px;' href="https://twitter.com/<?php echo $row->username; ?>/status/<?php echo $row->tweetid; ?>"><?php echo date('F d',strtotime($row->ts)); ?></a>)</blockquote>
+  <!-- <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script> -->
 
-  <a class="twitter-timeline" href="https://twitter.com/mario_giampieri" data-widget-id="579642852617097216">Tweets by @mario_giampieri</a>
-  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  <!-- <a class="twitter-timeline" href="https://twitter.com/mario_giampieri" data-widget-id="579642852617097216">Tweets by @mario_giampieri</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script> -->
 
-<div class="container">
+<div id="selcont" class="container">
     <h2> Tell us more about your trip</h2>
       <br>
       <h4>Thanks for agreeing to participate. Please choose a description that best fits your reason for travel from the list below:</h4>
         <br>
 
 <div class="form-group">
+    <div id="hsel">Please selected an answer from the list below</div>
   <label for="sel1">What best describes your reason for travelling?</label>
     <select class="form-control" id="sel1">
     <option>Select an answer...</option>
@@ -50,7 +69,7 @@
     <br>
 
 <p>Thanks again for your participation!</p>
-    <button type="button" class="btn btn-default">Submit >></button>
+    <button id="submitbutton" type="button" class="btn btn-default">Submit >></button>
 </div>
     <br>
   <div class="footer">
@@ -61,6 +80,26 @@
     <h5>PRIVACY & LEGAL</h5>
       <p>Morbi tellus mi, blandit sed lacinia ut, luctus et arcu. Sed venenatis at ex in aliquet. Vestibulum scelerisque rutrum enim sollicitudin dictum. Vivamus laoreet eleifend lacus. Duis in egestas massa. Aenean mollis sed lacus id venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum dignissim risus sit amet lacus molestie, facilisis aliquam enim scelerisque. Aenean id nunc ut est elementum scelerisque non non magna. Nunc congue augue sed hendrerit pulvinar. Ut a sapien sapien. Aliquam lobortis erat in magna varius condimentum. Aliquam lobortis lacinia augue id efficitur. Suspendisse efficitur et justo a lobortis. Phasellus mi diam, pharetra eu arcu quis, efficitur laoreet nunc.</p>
 </div>
-
+  <script>
+    var key = "<?php echo $row->id; ?>";
+    
+    $('#submitbutton').on('click', function() {
+        if ($('#sel1').val() == "Select an answer...") {
+            $('#hsel').show();
+        } else {
+            $('#hsel').hide();
+            var output = {key:key, class: $('#sel1').val()};
+            $.ajax({   
+                url: "addclassification.php", 
+                dataType: "json",
+                data: output,
+                success: function(result){
+                    if(result.status == 200)
+                        $('#selcont').html("<div style='font-size:15px;color:#0066ff'>Thank you for your participation.</div>");
+                }
+            });
+        }
+    });
+  </script>
 </body>
 </html>

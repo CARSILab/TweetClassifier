@@ -46,7 +46,7 @@
         global $connection, $count;
         $dbconn = pg_connect("host=localhost port=5432 dbname=carsitweets user=carsitweets password=carsitweets");
         $key = base_convert(time()+rand(),10,32);
-        $query = "INSERT INTO tweets VALUES('".$key."','".pg_escape_string($username)."',".$id.",'".pg_escape_string($txt)."','".$created."')";
+        $query = "INSERT INTO tweets (id, username, tweetid, tweet, ts) VALUES('".$key."','".pg_escape_string($username)."',".$id.",'".pg_escape_string($txt)."','".$created."')";
         pg_query($dbconn, $query) or die(pg_last_error());
         
         $url = buildURL($key);
