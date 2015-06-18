@@ -8,8 +8,8 @@
     }
     
     require "twitteroauth/autoload.php";
-    require('credentials.inc');
-    
+    require 'credentials.inc';
+
     use Abraham\TwitterOAuth\TwitterOAuth;
     
     $count = 0;
@@ -30,6 +30,7 @@
     
     function parseStatuses($statuses) {
         foreach($statuses->statuses as $tweet) {
+            var_dump($tweet);
             $lang = $tweet->metadata->iso_language_code;
             $created = $tweet->created_at;
             $id = $tweet->id;
@@ -38,12 +39,14 @@
             $user = $tweet->user->id;
             $username = $tweet->user->screen_name;
             $userloc = $tweet->user->location;
+            $lat = ($tweet->coordinates) ? $tweet->coordinates->coordinates[0] : -99;
+            $lng = ($tweet->coordinates) ? $tweet->coordinates->coordinates[1] : -99;
             // echo $lang . "\t" . $username . "\t" . $txt . "\n";
-            reply2user($username, $id, $txt, $created);
+            reply2user($username, $id, $txt, $created, $lat, $lng);
         }
     }
 
-    function reply2user($username, $id, $txt, $created) {
+    function reply2user($username, $id, $txt, $created, $lat, $lng) {
         global $connection, $count, $dbhost, $dbname, $dbuser, $dbpass;
         
 
@@ -59,7 +62,7 @@
         if ($row->count == 0) {
             // Create a new base32 unique key
             $key = base_convert(time()+rand(),10,32);
-            $query = "INSERT INTO tweets (id, username, tweetid, tweet, ts) VALUES('".$key."','".pg_escape_string($username)."',".$id.",'".pg_escape_string($txt)."','".$created."')";
+            $query = "INSERT INTO tweets (id, username, tweetid, tweet, ts, lat, lng) VALUES('".$key."','".pg_escape_string($username)."',".$id.",'".pg_escape_string($txt)."','".$created."',".$lat.",".$lng.")";
             pg_query($dbconn, $query) or die(pg_last_error());
             
             $url = buildURL($key);
