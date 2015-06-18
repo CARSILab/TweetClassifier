@@ -9,11 +9,19 @@
     }
     $key = pg_escape_string($_GET['q']);
     
-    $dbconn = pg_connect("host=localhost port=5432 dbname=$db user=$user password=$pass");
-    $query = "SELECT * FROM tweets WHERE id = '".$key."'";
+    $dbconn = pg_connect("host=$dbhost port=5432 dbname=$dbname user=$dbuser password=$dbpass");
+
   
+    // GET SURVEY DETAILS
+    $query = "SELECT * FROM tweets WHERE id = '".$key."'";
     $results = pg_query($dbconn, $query) or die(pg_last_error());
     $row = pg_fetch_object($results);
+
+    // STORE WHEN THE USER FIRST ACCESSED THE SURVEY
+    if (strlen($row->accessedsurvey) < 1) {
+        $q = "UPDATE tweets SET accessedsurvey = now() where id = '".$key."'";
+        pg_query($dbconn, $q) or die(pg_last_error());
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">

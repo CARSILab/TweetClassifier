@@ -8,12 +8,13 @@
     }
     
     require "twitteroauth/autoload.php";
+    require('credentials.inc');
+    
     use Abraham\TwitterOAuth\TwitterOAuth;
     
     $count = 0;
-    $access_token = "3177052813-MQp6hEaczJfNbYnXRZl13oijQ7HyOwLBHqbGNpR";
-    $access_token_secret = "AIm50r1XN1BLaxGNvI6aBpzmUf1lLOMKFq1jia3QAIACM";
-    $connection = new TwitterOAuth("nlOSq51CripxQZmlHbasWWbwq", "Qg0keC895hJYcB1Wgb6CvGAPXQezeVuy6rm8nSQ19wXM2UFZ9W", $access_token, $access_token_secret);
+    
+    $connection = new TwitterOAuth($client_token, $client_secret, $access_token, $access_token_secret);
     $content = $connection->get("account/verify_credentials");
 
     // $statuses = $connection->get("statuses/home_timeline", array("count" => 25, "exclude_replies" => true));
@@ -43,22 +44,35 @@
     }
 
     function reply2user($username, $id, $txt, $created) {
-        global $connection, $count;
-        $dbconn = pg_connect("host=localhost port=5432 dbname=carsitweets user=carsitweets password=carsitweets");
-        $key = base_convert(time()+rand(),10,32);
-        $query = "INSERT INTO tweets (id, username, tweetid, tweet, ts) VALUES('".$key."','".pg_escape_string($username)."',".$id.",'".pg_escape_string($txt)."','".$created."')";
-        pg_query($dbconn, $query) or die(pg_last_error());
+        global $connection, $count, $dbhost, $dbname, $dbuser, $dbpass;
         
-        $url = buildURL($key);
-        $tweet = "@".$username." We noticed that you ... Would you mind answering a quick question for an academic study? ".$url;
-        //echo $tweet;
-        $statues = $connection->post("statuses/update", array("status" => $tweet));
-        //var_dump($statues);
-        $count++;
+
+        $dbconn = pg_connect("host=$dbhost port=5432 dbname=$dbname user=$dbuser password=$dbpass");
+
+        // Make sure that we don't tweet people if we alreayd tweeted them (for a single tweet)
+        // This checks to make sure that the tweetid does not already exist in the database
+        $q = "SELECT count(*) FROM tweets where tweetid = ".$id;
+        $res = pg_query($dbconn, $q);
+        $row = pg_fetch_object($res);
+        pg_free_result($res);
+
+        if ($row->count == 0) {
+            // Create a new base32 unique key
+            $key = base_convert(time()+rand(),10,32);
+            $query = "INSERT INTO tweets (id, username, tweetid, tweet, ts) VALUES('".$key."','".pg_escape_string($username)."',".$id.",'".pg_escape_string($txt)."','".$created."')";
+            pg_query($dbconn, $query) or die(pg_last_error());
+            
+            $url = buildURL($key);
+            $tweet = "@".$username." We noticed that you ... Would you mind answering a quick question for an academic study? ".$url;
+            //echo $tweet;
+            $statues = $connection->post("statuses/update", array("status" => $tweet));
+            //var_dump($statues);
+            $count++;
+        }
     }
     
     function buildURL($key) {
-        $url = "http://spatialdeviant.com/c.php?i=".$key;
+        $url = "http://spatialdeviant.com/tc/?q=".$key;
         //$end = "u=".$username."&id=".$id."&t=".urlencode($txt)."&c=".strtotime($created);
         return $url;
     }

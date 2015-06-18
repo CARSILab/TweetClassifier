@@ -10,7 +10,7 @@
     $key = pg_escape_string($_GET['key']);
     $class = pg_escape_string($_GET['class']);
     
-    $dbconn = pg_connect("host=localhost port=5432 dbname=$db user=$user password=$pass");
+    $dbconn = pg_connect("host=$dbhost port=5432 dbname=$dbname user=$dbuser password=$dbpass");
     $query = "UPDATE tweets SET class = '".$class."' WHERE id = '".$key."' RETURNING *";
   
     $results = pg_query($dbconn, $query) or die(pg_last_error());
