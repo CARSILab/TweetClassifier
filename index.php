@@ -82,11 +82,24 @@
     <br>
   <div class="footer">
     <h5>PROJECT PURPOSE</h5>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt justo sed erat finibus, quis sollicitudin sapien efficitur. Cras consectetur tortor vitae metus fringilla, in tincidunt nisl porta. Proin lacus elit, ullamcorper non iaculis sed, ullamcorper a nunc. Aliquam fermentum, ipsum eu pharetra porta, lectus neque iaculis turpis, id consequat magna diam vitae urna. Suspendisse mollis hendrerit metus ut dictum. Mauris porta lectus id diam varius fringilla.</p>
-    <h5>WHO WE ARE</h5>
+      <p>This survey is conducted as part of a research project hosted at Hunter College, City University of New York. The goal is to develop machine learning techniques than can automatically figure out problems in public transport network based on social media. For this part, we need your help: By assigning one of the above categories to your previously posted tweet, you help us train our machine learning algorithm. The goal is to include social media in the monitoring of the public transport network, and ultimately improve service for all users.</p>
+      <p>Disclaimer: Your participation in this research study is entirely voluntary. You can decide to withdraw your consent and stop participating in the research at any time.</p>
+      <p>If you have any questions, comments or concerns about the research, please contact Carsten Kessler (@carstenkessler, carsten.kessler@hunter.cuny.edu)</p>
+      <p>
+      If you have questions about your rights as a research participant, or you have comments or concerns that you would like to discuss with someone other than the researchers, please call the CUNY Research Compliance Administrator at 646-664-8918. 
+      </p>
+      <p>Alternately, you can write to:
+      <br/><br/>
+      CUNY Office of the Vice Chancellor for Research<br/>
+      Attn: Research Compliance Administrator<br/>
+      205 East 42nd Street<br/>
+      New York, NY 10017
+      </p>
+    <!-- <h5>WHO WE ARE</h5>
       <p>Duis sit amet accumsan tortor, eu condimentum nulla. Cras pulvinar nibh vitae elit varius, eget lacinia felis molestie. Aliquam commodo ipsum convallis purus condimentum interdum. Etiam suscipit accumsan sodales.</p>
     <h5>PRIVACY & LEGAL</h5>
-      <p>Morbi tellus mi, blandit sed lacinia ut, luctus et arcu. Sed venenatis at ex in aliquet. Vestibulum scelerisque rutrum enim sollicitudin dictum. Vivamus laoreet eleifend lacus. Duis in egestas massa. Aenean mollis sed lacus id venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum dignissim risus sit amet lacus molestie, facilisis aliquam enim scelerisque. Aenean id nunc ut est elementum scelerisque non non magna. Nunc congue augue sed hendrerit pulvinar. Ut a sapien sapien. Aliquam lobortis erat in magna varius condimentum. Aliquam lobortis lacinia augue id efficitur. Suspendisse efficitur et justo a lobortis. Phasellus mi diam, pharetra eu arcu quis, efficitur laoreet nunc.</p>
+      <p>Morbi tellus mi, blandit sed lacinia ut, luctus et arcu. Sed venenatis at ex in aliquet. Vestibulum scelerisque rutrum enim sollicitudin dictum. Vivamus laoreet eleifend lacus. Duis in egestas massa. Aenean mollis sed lacus id venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum dignissim risus sit amet lacus molestie, facilisis aliquam enim scelerisque. Aenean id nunc ut est elementum scelerisque non non magna. Nunc congue augue sed hendrerit pulvinar. Ut a sapien sapien. Aliquam lobortis erat in magna varius condimentum. Aliquam lobortis lacinia augue id efficitur. Suspendisse efficitur et justo a lobortis. Phasellus mi diam, pharetra eu arcu quis, efficitur laoreet nunc.</p> -->
+
 </div>
   <script>
     var key = "<?php echo $row->id; ?>";

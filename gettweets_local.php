@@ -2,10 +2,15 @@
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
     
-    if(!isset($_GET['q'])) {
+    $lasdf = $argv[1];
+    echo $lasdf . "\n";
+    if (strlen($lasdf) < 3)
+        exit;
+
+    /*if(!isset($_GET['q'])) {
         echo "{\"response:\":\"Please provide a query string via the q parameter.\"}";
         exit;
-    }
+    } */
     
     require "twitteroauth/autoload.php";
     require 'credentials.inc';
@@ -18,7 +23,7 @@
     $content = $connection->get("account/verify_credentials");
 
     // $statuses = $connection->get("statuses/home_timeline", array("count" => 25, "exclude_replies" => true));
-    $statuses = $connection->get("search/tweets", array("count" => 25, "q" => pg_escape_string($_GET['q']), "exclude_replies" => true));
+    $statuses = $connection->get("search/tweets", array("count" => 10, "q" => pg_escape_string($lasdf), "exclude_replies" => true));
     parseStatuses($statuses);
     
     $response = (Object)array();
@@ -31,7 +36,7 @@
     function parseStatuses($statuses) {
         $count = 0;
         foreach($statuses->statuses as $tweet) {
-            // var_dump($tweet);
+            //var_dump($tweet);
             $lang = $tweet->metadata->iso_language_code;
             $created = $tweet->created_at;
             $id = $tweet->id;
@@ -45,7 +50,7 @@
             // echo $lang . "\t" . $username . "\t" . $txt . "\n";
             if ($count < 10)
                 reply2user($username, $id, $txt, $created, $lat, $lng);
-            
+
             $count++;
         }
     }
